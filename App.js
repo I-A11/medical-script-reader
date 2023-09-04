@@ -1,13 +1,32 @@
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { ref, set } from "firebase/database";
+import { db } from "./component/config.jsx";
 
 export default function App() {
   const [code, setCode] = useState("");
   const [name, setName] = useState("");
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("code", code, "name", name);
+    if (!code || !name) {
+      return;
+    }
+    set(ref(db, "users/" + code), {
+      pharmacyCode: code,
+      pharmacyName: name,
+      // profile_picture: imageUrl,
+    })
+      .then(() => {
+        //Data sent
+        alert("Data sent ");
+      })
+      .catch((error) => {
+        //There is an error
+        alert(error);
+      });
+
+    //Set field empty
     setCode("");
     setName("");
   };
